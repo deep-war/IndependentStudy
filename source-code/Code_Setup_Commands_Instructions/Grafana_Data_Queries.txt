@@ -1,0 +1,52 @@
+/########################################################################################################
+# This file holds all the PromQL Queries that are used for creating the Grafana Dashboard.
+# The deployments are tcss600users, tcss600posts, tcss600threads
+# @Author: Deepthi Warrier Edakunni
+# @Date: 10-June-2020
+########################################################################################################/
+
+-----------------------------------------------------------------------------------------------------
+    PromQL Queries for pod with name tcss600users* for retrieveing the CPU Usage, Memory Usage & the Network I/O Metrics
+-----------------------------------------------------------------------------------------------------
+rate(container_cpu_usage_seconds_total{pod=~"tcss600users-.*", image!="", container_name!="POD"}[5m])
+
+rate(container_memory_usage_bytes{pod=~"tcss600users-.*", image!="", container_name!="POD"}[5m])
+
+rate(container_network_receive_bytes_total{pod=~"tcss600users-.*", image!="", container_name!="POD"}[5m])
+
+
+
+-----------------------------------------------------------------------------------------------------
+    PromQL Queries for pod with name tcss600posts* for retrieveing the CPU Usage, Memory Usage & the Network I/O Metrics
+-----------------------------------------------------------------------------------------------------
+rate(container_cpu_usage_seconds_total{pod=~"tcss600posts-.*", image!="", container_name!="POD"}[5m])
+
+rate(container_memory_usage_bytes{pod=~"tcss600posts-.*", image!="", container_name!="POD"}[5m])
+
+rate(container_network_receive_bytes_total{pod=~"tcss600posts-.*", image!="", container_name!="POD"}[5m])
+
+
+
+-----------------------------------------------------------------------------------------------------
+    PromQL Queries for pod with name tcss600threads* for retrieveing the CPU Usage, Memory Usage & the Network I/O Metrics
+-----------------------------------------------------------------------------------------------------
+rate(container_cpu_usage_seconds_total{pod=~"tcss600threads-.*", image!="", container_name!="POD"}[5m])
+
+rate(container_memory_usage_bytes{pod=~"tcss600threads-.*", image!="", container_name!="POD"}[5m])
+
+rate(container_network_receive_bytes_total{pod=~"tcss600threads-.*", image!="", container_name!="POD"}[5m])
+
+
+
+-----------------------------------------------------------------------------------------------------
+    PromQL Queries for all pods under deployements - users,posts, threads with name tcss600* for retrieveing the CPU Usage, Memory Usage & the Network I/O Metrics
+-----------------------------------------------------------------------------------------------------
+rate(container_cpu_usage_seconds_total{pod=~"tcss600*.*", image!="", container_name!="POD"}[5m])
+
+rate(container_memory_usage_bytes{pod=~"tcss600*.*", image!="", container_name!="POD"}[5m])
+
+rate(container_network_receive_bytes_total{pod=~"tcss600*.*", image!="", container_name!="POD"}[5m])
+
+
+
+-----------------------------------------------------------------------------------------------------

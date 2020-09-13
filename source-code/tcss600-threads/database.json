@@ -1,0 +1,19 @@
+{
+  "threads": [
+    {
+      "id": 1,
+      "title": "Popular cloud Tutorials?",
+      "createdBy": 4
+    },
+    {
+      "id": 2,
+      "title": "Latest Learning Events",
+      "createdBy": 3
+    },
+    {
+      "id": 3,
+      "title": "Thanks for the Info!",
+      "createdBy": 1
+    }
+  ]
+}

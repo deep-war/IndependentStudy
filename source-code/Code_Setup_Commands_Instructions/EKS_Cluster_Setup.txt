@@ -1,0 +1,86 @@
+/########################################################################################################
+ # This file holds all the commands used for creating EKS Cluster
+ @Author: Deepthi Warrier Edakunni
+ @Date: 10-June-2020
+########################################################################################################/
+
+---------------------------------------------------------------------------------------------------------
+    Create IAM Role:
+---------------------------------------------------------------------------------------------------------
+Cloud9: IOTStudy
+Admin role: iotstudy-admin
+
+---------------------------------------------------------------------------------------------------------
+    Setting the region:
+---------------------------------------------------------------------------------------------------------
+rm -vf ${HOME}/.aws/credentials
+
+export ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
+export AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
+
+test -n "$AWS_REGION" && echo AWS_REGION is "$AWS_REGION" || echo AWS_REGION is not set
+
+echo "export ACCOUNT_ID=${ACCOUNT_ID}" | tee -a ~/.bash_profile
+echo "export AWS_REGION=${AWS_REGION}" | tee -a ~/.bash_profile
+aws configure set default.region ${AWS_REGION}
+aws configure get default.region
+
+---------------------------------------------------------------------------------------------------------
+    Confirm if the IAM role is valid *Very important Step
+---------------------------------------------------------------------------------------------------------
+aws sts get-caller-identity --query Arn | grep iotstudy-admin -q && echo "IAM role valid" || echo "IAM role NOT valid"
+
+---------------------------------------------------------------------------------------------------------
+    Clone the micro services code to the cloud 9 environment.
+---------------------------------------------------------------------------------------------------------
+cd ~/environment
+git clone https://github.com/deep-war/TCSS600.git
+
+---------------------------------------------------------------------------------------------------------
+    Create SSH Key to SSH to the EC2 instance Created
+---------------------------------------------------------------------------------------------------------
+ssh-keygen
+
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/ec2-user/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/ec2-user/.ssh/id_rsa.
+Your public key has been saved in /home/ec2-user/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:bwob2MpM1lO8wcOJgFGgvdJvJLmfFWUBMuk2qVpemxA ec2-user@ip-172-31-63-230
+The key's randomart image is:
++---[RSA 2048]----+
+|  oo+....        |
+| o o.o   .       |
+|. o...  o        |
+| .Eo=. B .       |
+|. =+..o S        |
+| .+=.+ o =       |
+| +.o*oB . o      |
+|. .Bo+ = o       |
+|    * . .        |
++----[SHA256]-----+
+
+---------------------------------------------------------------------------------------------------------
+Import public key to EC2 Region:
+---------------------------------------------------------------------------------------------------------
+aws ec2 import-key-pair --key-name "iotstudy" --public-key-material file://~/.ssh/id_rsa.pub
+
+---------------------------------------------------------------------------------------------------------
+Creating CMK:
+---------------------------------------------------------------------------------------------------------
+aws kms create-alias --alias-name alias/iotstudy --target-key-id $(aws kms create-key --query KeyMetadata.Arn --output text)
+
+export MASTER_ARN=$(aws kms describe-key --key-id alias/iotstudy --query KeyMetadata.Arn --output text)
+
+echo "export MASTER_ARN=${MASTER_ARN}" | tee -a ~/.bash_profile
+
+---------------------------------------------------------------------------------------------------------
+LAUNCH Using EKSCTL:
+---------------------------------------------------------------------------------------------------------
+eksctl create cluster -f iotstudy.yaml
+
+STACK_NAME=$(eksctl get nodegroup --cluster iotstudy-eksctl -o json | jq -r '.[].StackName')
+ROLE_NAME=$(aws cloudformation describe-stack-resources --stack-name $STACK_NAME | jq -r '.StackResources[] | select(.ResourceType=="AWS::IAM::Role") | .PhysicalResourceId')
+echo "export ROLE_NAME=${ROLE_NAME}" | tee -a ~/.bash_profile

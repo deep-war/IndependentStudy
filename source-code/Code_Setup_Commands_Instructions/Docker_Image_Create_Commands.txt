@@ -1,0 +1,17 @@
+/########################################################################################################
+ # Commands For Building a Docker Image for the projects
+ # @Author: Deepthi Warrier Edakunni
+ # @Date: 10-June-2020
+########################################################################################################/
+
+Step1: Make sure the Docker File has the following
+    Dockerfile. - FROM, WORKDIR, COPY to the workdirectory(Any commands to build the application, copy the files into the working directory), EXPOSE the port, CMD[]
+
+Step2: Build the image
+	Docker build : docker build -t deepthiwarrier/users:v1 .
+
+Step3: Push to Docker Hub
+	Push the image to dockerhub: docker push deepthiwarrier/users
+
+Step4: Run the Container and see everything is working fine.
+	docker run -d --name tcss600posts -p 8080:8080 deepthiwarrier/users:v1

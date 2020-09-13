@@ -1,0 +1,93 @@
+/########################################################################################################
+ # This file holds all the commands used for Deploying microservices, Kubernetes Dashboard, Prometheus and Grafana Dashboard
+ @Author: Deepthi Warrier Edakunni
+ @Date: 10-June-2020
+########################################################################################################/
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+
+kubectl proxy --port=8080 --address=0.0.0.0 --disable-filter=true &
+
+//api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+
+---------------------------------------------------------------------------------------------------------
+  Gives the token for logging into the Kubernetes Dashboard
+---------------------------------------------------------------------------------------------------------
+aws eks get-token --cluster-name iotstudy-eksctl | jq -r '.status.token'
+
+---------------------------------------------------------------------------------------------------------
+  Deploying the Microservices onto Kubernetes: Here the microservcies are tcss600users, tcss600posts & tcss600threads
+---------------------------------------------------------------------------------------------------------
+cd ~/environment/tcss600-users
+
+kubectl apply -f kubernetes/usersdeployment.yaml
+
+kubectl get deployment tcss600users
+
+cd ~/environment/tcss600-posts
+kubectl apply -f kubernetes/postsdeployment.yaml
+
+kubectl get deployment tcss600posts
+
+cd ~/environment/tcss600-threads
+kubectl apply -f kubernetes/threadsdeployment.yaml
+
+kubectl get deployment tcss600threads
+
+----------------------------------------------------------------------------------------------------------------------
+Install Metrics-Server api using instructions from https://docs.aws.amazon.com/eks/latest/userguide/metrics-server.html
+----------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------
+Prometheus after installation returns the DNSName of the server. Make a note of it. This will be used in Grafana Installation.
+---------------------------------------------------------------------------------------------------------
+NAME: prometheus
+LAST DEPLOYED: Thu Jun  4 04:38:39 2020
+NAMESPACE: prometheus
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+The Prometheus server can be accessed via port 80 on the following DNS name from within your cluster:
+prometheus-server.prometheus.svc.cluster.local
+
+
+Get the Prometheus server URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace prometheus -l "app=prometheus,component=server" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace prometheus port-forward $POD_NAME 9090
+
+
+The Prometheus alertmanager can be accessed via port 80 on the following DNS name from within your cluster:
+prometheus-alertmanager.prometheus.svc.cluster.local
+
+
+Get the Alertmanager URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace prometheus -l "app=prometheus,component=alertmanager" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace prometheus port-forward $POD_NAME 9093
+#################################################################################
+######   WARNING: Pod Security Policy has been moved to a global property.  #####
+######            use .Values.podSecurityPolicy.enabled with pod-based      #####
+######            annotations                                               #####
+######            (e.g. .Values.nodeExporter.podSecurityPolicy.annotations) #####
+#################################################################################
+
+
+The Prometheus PushGateway can be accessed via port 9091 on the following DNS name from within your cluster:
+prometheus-pushgateway.prometheus.svc.cluster.local
+
+
+Get the PushGateway URL by running these commands in the same shell:
+  export POD_NAME=$(kubectl get pods --namespace prometheus -l "app=prometheus,component=pushgateway" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace prometheus port-forward $POD_NAME 9091
+
+For more information on running Prometheus, visit:
+https://prometheus.io/
+
+---------------------------------------------------------------------------------------------------------
+  Forward the request to prometheus onto a different port 8081 to access the prometheus dashboard
+---------------------------------------------------------------------------------------------------------
+kubectl port-forward -n prometheus deploy/prometheus-server 8081:9090
+
+---------------------------------------------------------------------------------------------------------
+Access prometheus dashboard on 8081 by opening a new terminal and appending /targets at the end of the url
+---------------------------------------------------------------------------------------------------------

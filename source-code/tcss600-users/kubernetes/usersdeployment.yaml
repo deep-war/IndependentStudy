@@ -1,0 +1,50 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: tcss600users
+spec:
+  selector:
+    app: tcss600users
+  ports:
+    - protocol: "TCP"
+      # Port accessible inside cluster
+      port: 8083
+      # Port to forward to inside the pod
+      targetPort: 3000
+      # Port accessible outside cluster
+      nodePort: 30004
+  type: LoadBalancer
+
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tcss600users
+  labels:
+    app: tcss600users
+    namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: tcss600users
+  replicas: 3
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: tcss600users
+    spec:
+      containers:
+        - name: tcss600users
+          image: deepthiwarrier/users:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              protocol: TCP
