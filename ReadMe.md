@@ -18,4 +18,4 @@ AWS EKS, Kubernetes, Docker, Eksctl, Grafana for Visualization, Helm Package Man
 4. Dashboard_Deployment_Commands.txt
 5. Grafana_Data_Queries.txt
 
-## Detailed video Instructions can be found at 
+## Detailed video Instructions can be found at https://drive.google.com/file/d/1ZDu4ahxNqw8K43G5AsovSFktILuo_9yj/view?usp=sharing
