@@ -7,11 +7,11 @@ An IoT application typically consists of tens or hundreds of microservices work 
 ## Cloud Platform & Tools Used:
 AWS EKS, Kubernetes, Docker, Eksctl, Grafana for Visualization, Helm Package Manager, Locust.io testing tool & Jupyter Notebook for statistical modeling  
 
-## The source code folder has the readme files for all the steps to be followed for the code setup.  
+##### Setup Order  
 1. Go to source code folder
 2. Open Code_Setup_Commands_Instructions
 
-## The order for the text files to be refered for setting up the code is as below:
+##### Readme order
 1. Docker_Image_Create_Commands.txt
 2. Cloud9_Setup.txt
 3. EKS_Cluster_Setup.txt
