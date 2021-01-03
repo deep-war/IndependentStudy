@@ -6,7 +6,8 @@ An IoT application typically consists of tens or hundreds of microservices work 
 
 ##### Cloud Platform & Tools Used:
 ```sh
-AWS EKS, Kubernetes, Docker, Eksctl, Grafana for Visualization, Helm Package Manager, Locust.io testing tool & Jupyter Notebook for statistical modeling  
+AWS EKS, Kubernetes, Docker, Eksctl, Grafana for Visualization, Helm Package Manager
+Locust.io testing tool & Jupyter Notebook for statistical modeling  
 ```
 
 ##### Report
